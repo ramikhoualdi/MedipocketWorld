@@ -1,0 +1,47 @@
+{
+  "cli": {
+    "version": ">= 0.42.4"
+  },
+  "build": {
+    "com.medipocket.world": {
+      "ios": {
+        "cache": {
+          "disabled": false,
+          "key": "12345678"
+        }
+      }
+    },
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "preview2": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "ios": {
+        "simulator": true,
+        "cache": {
+          "disabled": false,
+          "key": "12345678"
+        }
+      }
+    },
+    "preview3": {
+      "developmentClient": true
+    },
+    "production": {
+      "ios": {
+        "cocoapods": "1.11.2"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
