@@ -53,10 +53,10 @@ const PayCardsModel = (props) => {
   useEffect(() => {
     try {
       fetch("https://pay.medipocket.world/create-payment-intent/", {
-      // fetch("http://192.168.43.149:3000/create-payment-intent/", {
+        // fetch("http://192.168.43.149:3000/create-payment-intent/", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ amount: pay }),
       })
@@ -66,7 +66,7 @@ const PayCardsModel = (props) => {
           setKey(res.clientSecret);
         });
     } catch (err) {
-      Alert.alert(err.message);
+      Alert.alert("Something went wrong!", "please try again later");
       console.log("error => ", err);
     }
   }, []);
@@ -83,14 +83,17 @@ const PayCardsModel = (props) => {
       });
 
       if (!error) {
-        Alert.alert("Received payment", `Billed for $${parseInt(paymentIntent?.amount)/100}`);
+        Alert.alert(
+          "Received payment",
+          `Billed for $${parseInt(paymentIntent?.amount) / 100}`
+        );
         // Success
         setPaymentLoading(false);
         setModalVisible(true);
         setSuccess(true);
       } else {
         // Failed
-        Alert.alert("Error", error.message);
+        Alert.alert("Error", "Something went wrong!\nplease try again later");
         setPaymentLoading(false);
         setSuccess(false);
       }
