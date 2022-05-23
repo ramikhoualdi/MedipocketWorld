@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../../constants";
@@ -38,12 +38,21 @@ const CONSULT_QUERY = gql`
       }
       doctor {
         profilePicture
+        firstName
+        lastName
       }
       rnToken
       channelName
     }
+    serverCurrenttime
   }
 `;
+
+// const CURRENT_TIME = gql`
+//   query {
+//     serverCurrenttime
+//   }
+// `;
 
 const Consults = ({ route, navigation }) => {
   const prev = route?.params?.prev;
@@ -59,12 +68,11 @@ const Consults = ({ route, navigation }) => {
   }, [prev]);
 
   const getConsult = () => {
-
-    setInitialLoading(true)
+    setInitialLoading(true);
     let tab = [];
-
     if (data?.allSchedules?.length > 0)
-      for (let i = 0; i < data.allSchedules.length; i++) {
+      for (let i = 0; i < data?.allSchedules?.length; i++) {
+
         if (data.allSchedules[i].customer?.user?.email === userD.email) {
           const month = [
             "January",
@@ -80,15 +88,49 @@ const Consults = ({ route, navigation }) => {
             "November",
             "December",
           ];
-
-          const nbDate = new Date(
+          
+          let appointment_date_time = new Date(
             `${month[data.allSchedules[i].date.substr(5, 2) - 1]
             } ${data.allSchedules[i].date.substr(8, 2)}, ${data.allSchedules[
               i
             ].date.substr(0, 4)} ${data.allSchedules[i].startTime}`
           );
-          const d = new Date();
-          const timeLeft = (nbDate - d) / 1000;
+
+          let appointment_date_time_in_given_gmt = new Date(`${month[data.allSchedules[i].date.substr(5, 2) - 1]
+            } ${data.allSchedules[i].date.substr(8, 2)}, ${data.allSchedules[
+              i
+            ].date.substr(0, 4)} ${data.allSchedules[i].startTime} GMT+0530 (IST)`)
+
+          let current_date_time_from_server = new Date(data.serverCurrenttime * 1000);
+
+          console.log('                               ')
+
+          console.log('???????????????????????????????????')
+          console.log('appointment_date_time :', appointment_date_time)
+          // console.log('appointment_date_time_array :', appointment_date_time_array)
+          console.log('appointment_date_time_in_given_gmt :', appointment_date_time_in_given_gmt)
+          console.log('???????????????????????????????????')
+
+          console.log('                               ')
+
+          console.log('>>>>>>>>>>>>>>>>>>>>>>>>>')
+          console.log('current_date_time_from_server :', current_date_time_from_server)
+          // console.log('current_date_time_from_server_array :', current_date_time_from_server_array)
+          // console.log('current_date_time_from_server_gmt :', current_date_time_from_server_gmt)
+          console.log('>>>>>>>>>>>>>>>>>>>>>>>>>')
+
+          console.log('                               ')
+
+          console.log('=========================')
+          console.log('=========================')
+
+          console.log('                               ')
+          console.log('=========================')
+          console.log('=========================')
+          console.log('                               ')
+
+          const timeLeft = (appointment_date_time_in_given_gmt - current_date_time_from_server) / 1000;
+
 
           if (timeLeft > 0) {
             const t = {
@@ -97,7 +139,7 @@ const Consults = ({ route, navigation }) => {
                 parseInt(data.allSchedules[i].date.substr(5, 2)) - 1
               ].substr(0, 3),
               spec: data.allSchedules[i].specializations.specializationName,
-              time: nbDate,
+              time: appointment_date_time_in_given_gmt,
               doctorImg: data.allSchedules[i].doctor.profilePicture,
               rtcToken: data.allSchedules[i].rnToken,
               channelName: data.allSchedules[i].channelName,
@@ -111,43 +153,41 @@ const Consults = ({ route, navigation }) => {
       }
 
     setSum(tab);
-    setInitialLoading(false)
+    setInitialLoading(false);
+  };
+
+  const convertLocalTimeToUTCTime = (params) => {
+
+    console.log('params :', params)
+    const [fullDate, time] = params.split('T');
+    const [year, month, date] = fullDate.split('-');
+    const [hour, minute, second] = time.split(':');
+    const dateTime = new Date(year, month, date, hour, minute, second);
+    return dateTime.toISOString();
   };
 
   // useEffect(() => {
-  //   // if (data && !loading && userD) {
-  //   if (!loading) getConsult();
-  // },[loading]);
-
-
-  useEffect(() => {
-
-    if (isFocused) {
-
-      getConsult();
-    }
-  }, [isFocused]);
-
+  //   if (isFocused) {
+  //     getConsult();
+  //   }
+  // }, [isFocused]);
 
   useEffect(() => {
-
     getConsult();
   }, []);
 
-
   if (initialLoading) {
-
     return (
       <View
         style={{
           flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center'
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <ActivityIndicator color="#000 " />
       </View>
-    )
+    );
   }
 
   return (
