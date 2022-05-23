@@ -87,49 +87,27 @@ const Consults = ({ route, navigation }) => {
             "November",
             "December",
           ];
-          
-          let appointment_date_time = new Date(
-            `${month[data.allSchedules[i].date.substr(5, 2) - 1]
-            } ${data.allSchedules[i].date.substr(8, 2)}, ${data.allSchedules[
-              i
-            ].date.substr(0, 4)} ${data.allSchedules[i].startTime}`
-          );
+
+          // let appointment_date_time = new Date(
+          //   `${month[data.allSchedules[i].date.substr(5, 2) - 1]
+          //   } ${data.allSchedules[i].date.substr(8, 2)}, ${data.allSchedules[
+          //     i
+          //   ].date.substr(0, 4)} ${data.allSchedules[i].startTime}`
+          // );
 
           let appointment_date_time_in_given_gmt = new Date(`${month[data.allSchedules[i].date.substr(5, 2) - 1]
             } ${data.allSchedules[i].date.substr(8, 2)}, ${data.allSchedules[
               i
-            ].date.substr(0, 4)} ${data.allSchedules[i].startTime} GMT+0530 (IST)`)
+            ].date.substr(0, 4)} ${data.allSchedules[i].startTime} GMT`)
 
           let current_date_time_from_server = new Date(data.serverCurrenttime * 1000);
 
-          console.log('                               ')
+          var [nyear, nmonth, nday] = data.allSchedules[i].date.split('-');
+          var [nhour, nmin, nsec] = data.allSchedules[i].startTime.split(':');
+          let appointment_date_time_utc = Date.UTC(nyear, nmonth, nday, nhour, nmin, nsec);
 
-          console.log('???????????????????????????????????')
-          console.log('appointment_date_time :', appointment_date_time)
-          // console.log('appointment_date_time_array :', appointment_date_time_array)
-          console.log('appointment_date_time_in_given_gmt :', appointment_date_time_in_given_gmt)
-          console.log('???????????????????????????????????')
-
-          console.log('                               ')
-
-          console.log('>>>>>>>>>>>>>>>>>>>>>>>>>')
-          console.log('current_date_time_from_server :', current_date_time_from_server)
-          // console.log('current_date_time_from_server_array :', current_date_time_from_server_array)
-          // console.log('current_date_time_from_server_gmt :', current_date_time_from_server_gmt)
-          console.log('>>>>>>>>>>>>>>>>>>>>>>>>>')
-
-          console.log('                               ')
-
-          console.log('=========================')
-          console.log('=========================')
-
-          console.log('                               ')
-          console.log('=========================')
-          console.log('=========================')
-          console.log('                               ')
-
+          // const timeLeft = appointment_date_time_utc - (data.serverCurrenttime * 1000);
           const timeLeft = (appointment_date_time_in_given_gmt - current_date_time_from_server) / 1000;
-
 
           if (timeLeft > 0) {
             const t = {
@@ -138,7 +116,7 @@ const Consults = ({ route, navigation }) => {
                 parseInt(data.allSchedules[i].date.substr(5, 2)) - 1
               ].substr(0, 3),
               spec: data.allSchedules[i].specializations.specializationName,
-              time: appointment_date_time_in_given_gmt,
+              time:  appointment_date_time_in_given_gmt,
               doctorImg: data.allSchedules[i].doctor.profilePicture,
               rtcToken: data.allSchedules[i].rnToken,
               channelName: data.allSchedules[i].channelName,
@@ -153,16 +131,6 @@ const Consults = ({ route, navigation }) => {
 
     setSum(tab);
     setInitialLoading(false);
-  };
-
-  const convertLocalTimeToUTCTime = (params) => {
-
-    console.log('params :', params)
-    const [fullDate, time] = params.split('T');
-    const [year, month, date] = fullDate.split('-');
-    const [hour, minute, second] = time.split(':');
-    const dateTime = new Date(year, month, date, hour, minute, second);
-    return dateTime.toISOString();
   };
 
   // useEffect(() => {
