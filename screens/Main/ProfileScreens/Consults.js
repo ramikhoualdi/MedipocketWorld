@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../../constants";
@@ -38,12 +38,21 @@ const CONSULT_QUERY = gql`
       }
       doctor {
         profilePicture
+        firstName
+        lastName
       }
       rnToken
       channelName
     }
+    serverCurrenttime
   }
 `;
+
+// const CURRENT_TIME = gql`
+//   query {
+//     serverCurrenttime
+//   }
+// `;
 
 const Consults = ({ route, navigation }) => {
   const prev = route?.params?.prev;
@@ -59,12 +68,10 @@ const Consults = ({ route, navigation }) => {
   }, [prev]);
 
   const getConsult = () => {
-
-    setInitialLoading(true)
+    setInitialLoading(true);
     let tab = [];
-
     if (data?.allSchedules?.length > 0)
-      for (let i = 0; i < data.allSchedules.length; i++) {
+      for (let i = 0; i < data?.allSchedules?.length; i++) {
         if (data.allSchedules[i].customer?.user?.email === userD.email) {
           const month = [
             "January",
@@ -80,16 +87,20 @@ const Consults = ({ route, navigation }) => {
             "November",
             "December",
           ];
-
           const nbDate = new Date(
-            `${month[data.allSchedules[i].date.substr(5, 2) - 1]
+            `${
+              month[data.allSchedules[i].date.substr(5, 2) - 1]
             } ${data.allSchedules[i].date.substr(8, 2)}, ${data.allSchedules[
               i
             ].date.substr(0, 4)} ${data.allSchedules[i].startTime}`
           );
-          const d = new Date();
+          const d = new Date(data.serverCurrenttime * 1000);
           const timeLeft = (nbDate - d) / 1000;
-
+          const ddate = new Date();
+          console.log(nbDate);
+          console.log("Datre JS NOW", ddate);
+          console.log("Datre JS NOW by app", d);
+          console.log("timeLeft => ", timeLeft);
           if (timeLeft > 0) {
             const t = {
               day: data.allSchedules[i].date.substr(8, 2),
@@ -111,43 +122,31 @@ const Consults = ({ route, navigation }) => {
       }
 
     setSum(tab);
-    setInitialLoading(false)
+    setInitialLoading(false);
   };
 
   // useEffect(() => {
-  //   // if (data && !loading && userD) {
-  //   if (!loading) getConsult();
-  // },[loading]);
-
-
-  useEffect(() => {
-
-    if (isFocused) {
-
-      getConsult();
-    }
-  }, [isFocused]);
-
+  //   if (isFocused) {
+  //     getConsult();
+  //   }
+  // }, [isFocused]);
 
   useEffect(() => {
-
     getConsult();
   }, []);
 
-
   if (initialLoading) {
-
     return (
       <View
         style={{
           flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center'
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <ActivityIndicator color="#000 " />
       </View>
-    )
+    );
   }
 
   return (
