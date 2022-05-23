@@ -72,7 +72,6 @@ const Consults = ({ route, navigation }) => {
     let tab = [];
     if (data?.allSchedules?.length > 0)
       for (let i = 0; i < data?.allSchedules?.length; i++) {
-
         if (data.allSchedules[i].customer?.user?.email === userD.email) {
           const month = [
             "January",
