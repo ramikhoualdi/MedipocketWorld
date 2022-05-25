@@ -47,6 +47,8 @@ const PayCardsModel = (props) => {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [failed, setFailed] = useState(false);
   const [validCard, setValidCard] = useState(false);
+  const [cardData, setcardData] = useState(null);
+  
   //   Error data
   const [isSelectedError, setSelectedError] = useState(false);
 
@@ -154,6 +156,7 @@ const PayCardsModel = (props) => {
         onCardChange={(cardDetails) => {
           console.log("cardDetails", cardDetails);
           setValidCard(cardDetails.complete);
+          setcardData(cardDetails)
         }}
         onFocus={(focusedField) => {
           console.log("focusField", focusedField);
