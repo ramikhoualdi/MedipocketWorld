@@ -245,18 +245,18 @@ const PayCardsModel = (props) => {
       {/* Stripe */}
       <CardField
         postalCodeEnabled={false}
-        // placeholder={{
-        //   number: "4242 4242 4242 4242",
-        // }}
+        placeholder={{
+          number: "Enter your card number   ",
+        }}
         cardStyle={{
           backgroundColor: "#FFFFFF",
           textColor: "#000000",
+          flexDirectionL:'column'
         }}
         style={{
           width: "100%",
           height: 50,
           marginVertical: 30,
-          borderRadius: 8,
         }}
         onCardChange={(cardDetails) => {
           console.log("cardDetails", cardDetails);
